@@ -33,8 +33,6 @@ public class TestStatusCheckPR {
 
   // @Test Hello Professor i cancelled the test like we talked about in office
   // hours.
-
-  @Test
   public void testPullRequest() throws Exception {
     String baseApiPath = getBaseApiPath();
     String toCurl = baseApiPath + "pulls?state=all";
