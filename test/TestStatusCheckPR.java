@@ -27,7 +27,7 @@ public class TestStatusCheckPR {
     private static final String APPROVED = "APPROVED";
     
     @Test
-    public void FakeTest() throws Exception{
+    public void fakeTest() throws Exception{
       //Fake test
     }
      
