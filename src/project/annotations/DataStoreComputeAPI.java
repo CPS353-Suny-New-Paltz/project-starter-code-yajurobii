@@ -8,4 +8,10 @@ public interface DataStoreComputeAPI {
 
   // Loads the data back using it's ID.
   byte[] loadData(String id);
+
+  // Separate method for loading computation result.
+  StorageResponse insertResult(StorageRequest request);
+
+  // Loads result back using ID.
+  byte[] loadResult(String id);
 }

@@ -5,17 +5,23 @@ public class DataStoreComputeAPIPrototype {
   public void prototype(DataStoreComputeAPI store) {
 
     // Store the number "16" for example as raw bytes
-    StorageResponse key = store.insertRequest(new StorageRequest("16".getBytes()));
+    StorageResponse inputkey = store.insertRequest(new StorageRequest("16".getBytes()));
 
-    // If storing succeeded (key != null), the data is loaded back.
-    if (key != null) {
+    // If storing succeeded (inputkey.getStatus() == StoreStatus.SUCCESS), the data
+    // is loaded back.
+    if (inputkey.getStatus() == StoreStatus.SUCCESS) {
 
-      String result = new String(store.loadData(key.getId()));
-      System.out.println("Retrieved: " + result);
+      String input = new String(store.loadData(inputkey.getId()));
+      System.out.println("Retrieved input data: " + input);
+    }
 
-      // If storing does not succeed, this is returned.
-    } else {
-      System.out.println("Insertion failed!");
+    // Pretend core made calculation already, Store the string as the result.
+    StorageResponse resultkey = store.insertResult(new StorageRequest("2,3,5,7,11,13".getBytes()));
+
+    // If successful, load the result back to the returned id.
+    if (resultkey.getStatus() == StoreStatus.SUCCESS) {
+      String result = new String(store.loadResult(resultkey.getId()));
+      System.out.println("Retrieved result: " + result);
     }
   }
 
