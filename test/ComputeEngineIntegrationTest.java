@@ -2,13 +2,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 
+import project.annotations.ComputeControllerAPI;
+import project.annotations.ComputeControllerAPIImplementation;
 import project.annotations.StorageRequest;
 import project.annotations.StorageResponse;
 import project.annotations.StoreStatus;
+import project.annotations.UserComputeAPI;
+import project.annotations.UserComputeAPIImplementation;
 
 public class ComputeEngineIntegrationTest {
   @Test
   public void testInMemoryDataStore() {
+    UserComputeAPI userApi = new UserComputeAPIImplementation();
+    ComputeControllerAPI computeApi = new ComputeControllerAPIImplementation();
     DataStoreInMemory store = new DataStoreInMemory();
 
     // Act as if user entered "16"
@@ -23,6 +29,8 @@ public class ComputeEngineIntegrationTest {
 
     // Check what's gotten back is what was stored.
     assertEquals("16", loadedInput);
+    
+    assertNotNull(computeApi);
 
     // Act as if engine found primes <= 16.
     StorageResponse outResp = store.insertResult(new StorageRequest("2,3,5,7,11,13".getBytes()));
@@ -36,6 +44,8 @@ public class ComputeEngineIntegrationTest {
 
     // Verify that expected result is gotten.
     assertEquals("2,3,5,7,11,13", loadedResult);
+    
+    assertNotNull(userApi);
 
   }
 
