@@ -2,22 +2,22 @@ package project.annotations;
 
 public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
   @Override
-  public StorageResponse insertRequest(StorageRequest request) {
+  public StorageResponse insertRequest(int input) {
     return new StorageResponse(null, StoreStatus.FAILURE_WRITE_ERROR);
   }
 
   @Override
-  public byte[] loadData(String id) {
-    return null;
+  public int loadData(String id) {
+    return 0;
   }
 
   @Override
-  public StorageResponse insertResult(StorageRequest request) {
+  public StorageResponse insertResult(String result) {
     return new StorageResponse(null, StoreStatus.FAILURE_WRITE_ERROR);
   }
 
   @Override
-  public byte[] loadResult(String id) {
+  public String loadResult(String id) {
     return null;
   }
 

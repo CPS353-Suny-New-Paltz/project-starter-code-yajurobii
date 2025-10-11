@@ -4,48 +4,38 @@ import org.junit.jupiter.api.Test;
 
 import project.annotations.ComputeControllerAPI;
 import project.annotations.ComputeControllerAPIImplementation;
-import project.annotations.StorageRequest;
+import project.annotations.Delimiter;
+import project.annotations.InputSource;
+import project.annotations.OutputSource;
 import project.annotations.StorageResponse;
-import project.annotations.StoreStatus;
+import project.annotations.SubmissionStatus;
 import project.annotations.UserComputeAPI;
 import project.annotations.UserComputeAPIImplementation;
+import project.annotations.UserSubResponse;
+import project.annotations.UserSubmission;
 
 public class ComputeEngineIntegrationTest {
   @Test
   public void testInMemoryDataStore() {
-    UserComputeAPI userApi = new UserComputeAPIImplementation();
+
     ComputeControllerAPI computeApi = new ComputeControllerAPIImplementation();
     DataStoreInMemory store = new DataStoreInMemory();
+    UserComputeAPI userApi = new UserComputeAPIImplementation(store, computeApi);
 
     // Act as if user entered "16"
-    StorageResponse inResp = store.insertRequest(new StorageRequest("16".getBytes()));
+    StorageResponse inResp = store.insertRequest(16);
+    String inputId = inResp.getId();
 
-    // Assert that the storage worked.
-    assertEquals(StoreStatus.SUCCESS, inResp.getStatus());
-    assertNotNull(inResp.getId());
+    UserSubmission submission = new UserSubmission(new InputSource("memory", inputId), new OutputSource("stdout"),
+        new Delimiter(",", ":"));
 
-    // Fetch same value back using earlier assigned ID.
-    String loadedInput = new String(store.loadData(inResp.getId()));
+    UserSubResponse response = userApi.submit(submission);
 
-    // Check what's gotten back is what was stored.
-    assertEquals("16", loadedInput);
-    
-    assertNotNull(computeApi);
+    assertEquals(SubmissionStatus.SUCCESS, response.getStatus());
+    assertNotNull(response.getSubId());
 
-    // Act as if engine found primes <= 16.
-    StorageResponse outResp = store.insertResult(new StorageRequest("2,3,5,7,11,13".getBytes()));
-
-    // Assert result storage worked.
-    assertEquals(StoreStatus.SUCCESS, outResp.getStatus());
-    assertNotNull(outResp.getId());
-
-    // Same as loadedInput but for result.
-    String loadedResult = new String(store.loadResult(outResp.getId()));
-
-    // Verify that expected result is gotten.
-    assertEquals("2,3,5,7,11,13", loadedResult);
-    
-    assertNotNull(userApi);
+    String storedResult = store.loadResult(response.getSubId());
+    assertEquals("2,3,5,7,11,13", storedResult);
 
   }
 

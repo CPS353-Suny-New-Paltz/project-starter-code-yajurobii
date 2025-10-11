@@ -1,4 +1,4 @@
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -11,21 +11,20 @@ public class TestComputeContollerAPI {
   @Test
   public void testComputePrimes() {
     ComputeControllerAPI mockcomp = Mockito.mock(ComputeControllerAPI.class);
+    Mockito.when(mockcomp.compute(Mockito.any(ComputeRequest.class))).thenReturn(new ComputeResponse("2,3,5,7,11,13"));
 
-    ComputeRequest req = new ComputeRequest(16);
-    ComputeResponse resp = mockcomp.compute(req);
-    assertNull(resp);
+    ComputeResponse resp = mockcomp.compute(new ComputeRequest(16));
+    assertEquals("2,3,5,7,11,13", resp.getResult());
 
   }
-  
+
   @Test
   public void testRealImplReturnsNull() {
     ComputeControllerAPI real = new ComputeControllerAPIImplementation();
-    ComputeRequest req = new ComputeRequest(16);
-    
-    ComputeResponse resp = real.compute(req);
-    
-    assertNull(resp);
+
+    ComputeResponse resp = real.compute(new ComputeRequest(16));
+
+    assertEquals("2,3,5,7,11,13", resp.getResult());
   }
 
 }
