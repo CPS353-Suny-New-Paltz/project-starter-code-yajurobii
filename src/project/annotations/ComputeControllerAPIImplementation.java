@@ -10,7 +10,7 @@ public class ComputeControllerAPIImplementation implements ComputeControllerAPI 
     for (int i = 2; i <= n; i++) {
       if (isPrime(i)) { // checking if i is prime.
         if (result.length() > 0) { // if its not he first prime a comma is added.
-          result.append(" , ");
+          result.append(",");
         }
         result.append(i); // add the prime number to the string.
       }
