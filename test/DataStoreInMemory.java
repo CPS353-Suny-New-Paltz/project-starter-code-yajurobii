@@ -17,9 +17,8 @@ public class DataStoreInMemory implements DataStoreComputeAPI {
     inputs.add(input);
     String id = "input-" + (inputs.size() - 1);
     return new StorageResponse(id, StoreStatus.SUCCESS);
-    }
+  }
 
-    
   // Remove input prefix from id, convert the number left over to index,
   // .getIndex() to return stored data, if something goes wrong null will be
   // returned.
@@ -39,9 +38,7 @@ public class DataStoreInMemory implements DataStoreComputeAPI {
     results.add(result);
     String id = "result-" + (results.size() - 1);
     return new StorageResponse(id, StoreStatus.SUCCESS);
-    }
-
-    
+  }
 
   // Works like loadData, but pulls from result.
   @Override
