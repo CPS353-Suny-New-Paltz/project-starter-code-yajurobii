@@ -21,12 +21,14 @@ public class ComputeControllerAPIImplementation implements ComputeControllerAPI 
   }
 
   private boolean isPrime(int num) {
-    if (num < 2)
-      return false; // 0 and 1 are not prime numbers so auto-false.
+    if (num < 2) {
+      return false;
+    } // 0 and 1 are not prime numbers so auto-false.
     for (int i = 2; i * i <= num; i++) { // testing divisors up to sqrt of num(e.g. i = 2 → 2*2 4 ≤ 7 → test)
-      if (num % i == 0) // e.g. num = 7; remainder is 1, loop continues up to i = 3, 3*3=9, 9 ≤ 7 is
-                        // false so loop stops, no divisors so it is prime.
+      if (num % i == 0) { // e.g. num = 7; remainder is 1, loop continues up to i = 3, 3*3=9, 9 ≤ 7 is
+        // false so loop stops, no divisors so it is prime.
         return false;
+      }
     }
     return true;
   }
