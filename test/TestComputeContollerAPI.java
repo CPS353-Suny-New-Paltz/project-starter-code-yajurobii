@@ -11,7 +11,7 @@ public class TestComputeContollerAPI {
   @Test
   public void testComputePrimes() {
     ComputeControllerAPI mockcomp = Mockito.mock(ComputeControllerAPI.class);
-    Mockito.when(mockcomp.compute(new ComputeRequest(16))).thenReturn(new ComputeResponse("2,3,5,7,11,13"));
+    Mockito.when(mockcomp.compute(Mockito.any(ComputeRequest.class))).thenReturn(new ComputeResponse("2,3,5,7,11,13"));
 
     ComputeResponse resp = mockcomp.compute(new ComputeRequest(16));
     assertEquals("2,3,5,7,11,13", resp.getResult());
