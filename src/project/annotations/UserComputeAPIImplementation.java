@@ -15,6 +15,9 @@ public class UserComputeAPIImplementation implements UserComputeAPI {
   public UserSubResponse submit(UserSubmission submission) {
     try {
       int n = dataStore.loadData(submission.getInput().getLocation());
+      if (n <= 0) {
+        return new UserSubResponse(null, SubmissionStatus.FAILURE_SYSTEM_ERROR);
+      }
       ComputeResponse result = computeEngine.compute(new ComputeRequest(n));
       StorageResponse resResp = dataStore.insertResult(result.getResult());
       return new UserSubResponse(resResp.getId(), SubmissionStatus.SUCCESS);
