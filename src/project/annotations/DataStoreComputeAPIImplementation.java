@@ -6,8 +6,8 @@ import java.nio.file.Paths;
 
 public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
   // Two files where data is stored and received.
-  private static final String INPUT_FILE = "input.txt";
-  private static final String RESULT_FILE = "result.txt";
+  private static final String INPUT_FILE = "manualTestInput.txt";
+  private static final String RESULT_FILE = "manualTestOutput.txt";
 
   @Override
   public StorageResponse insertRequest(int input) {// Converts integer to string then writes string to file imput.txt
