@@ -35,24 +35,21 @@ public class ManualTestingFramework {
       for (String line : inputs) {
         int n = Integer.parseInt(line.trim());
 
-        
         UserSubmission sub = new UserSubmission(new InputSource("file", INPUT), new OutputSource(OUTPUT),
             new Delimiter(",", ":"));
 
-
         dataStore.insertRequest(n);
 
-        
         ComputeResponse result = computeEngine.compute(new ComputeRequest(n));
         allResults.append(result.getResult()).append(",");
       }
 
-      
-      if (allResults.length() > 0)
+      if (allResults.length() > 0) {
         allResults.setLength(allResults.length() - 1);
 
-      Files.writeString(Paths.get(OUTPUT), allResults.toString());
-      System.out.println("Computation done, results written to " + OUTPUT);
+        Files.writeString(Paths.get(OUTPUT), allResults.toString());
+        System.out.println("Computation done, results written to " + OUTPUT);
+      }
 
     } catch (Exception e) {
       e.printStackTrace();
