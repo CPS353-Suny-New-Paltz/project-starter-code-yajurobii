@@ -41,15 +41,17 @@ public class ManualTestingFramework {
         dataStore.insertRequest(n);
 
         ComputeResponse result = computeEngine.compute(new ComputeRequest(n));
-        allResults.append(result.getResult()).append(",");
+        
+        int count = result.getResult().isEmpty() ? 0 : result.getResult().split(",").length;
+        allResults.append(count).append(",");
       }
 
       if (allResults.length() > 0) {
-        allResults.setLength(allResults.length() - 1);
+        allResults.setLength(allResults.length() - 1);}
 
         Files.writeString(Paths.get(OUTPUT), allResults.toString());
         System.out.println("Computation done, results written to " + OUTPUT);
-      }
+      
 
     } catch (Exception e) {
       e.printStackTrace();
