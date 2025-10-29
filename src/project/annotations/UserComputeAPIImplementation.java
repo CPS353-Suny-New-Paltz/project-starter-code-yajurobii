@@ -46,19 +46,22 @@ public class UserComputeAPIImplementation implements UserComputeAPI {
         return new UserSubResponse(null, SubmissionStatus.FAILURE_SYSTEM_ERROR);
       }
 
-      StoreStatus status = dataStore.writeResult(submission.getOutput().getLocation(), results.toString()); // store
-                                                                                                            // result
-                                                                                                            // string to
-                                                                                                            // user
-                                                                                                            // specified
-                                                                                                            // path.
-      if (status != StoreStatus.SUCCESS) {
+      StorageResponse storeResp = dataStore.insertResult(results.toString());
+      if (storeResp.getStatus() != StoreStatus.SUCCESS || storeResp.getId() == null) {
         return new UserSubResponse(null, SubmissionStatus.FAILURE_SYSTEM_ERROR);
       }
-      return new UserSubResponse(submission.getOutput().getLocation(), SubmissionStatus.SUCCESS); // return id as output
-                                                                                                  // file path so tests
-                                                                                                  // can load if
-                                                                                                  // necessary.
+
+      // Return the storage-assigned result ID so tests can retrieve it
+      return new UserSubResponse(storeResp.getId(), SubmissionStatus.SUCCESS);// store
+                                                                              // result
+                                                                              // string to
+                                                                              // user
+                                                                              // specified
+                                                                              // path.
+      // return id as output
+      // file path so tests
+      // can load if
+      // necessary.
 
     } catch (Exception e) {
       return new UserSubResponse(null, SubmissionStatus.FAILURE_SYSTEM_ERROR); // prevent exception from boundary

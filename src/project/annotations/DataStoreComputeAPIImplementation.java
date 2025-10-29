@@ -41,7 +41,7 @@ public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
       result = "";
     }
     try {
-      Files.writeString(Paths.get("manualTestOutput.txt"), result);
+      Files.writeString(Paths.get("manualTestOutput.txt"), result == null ? "" : result);
       return new StorageResponse("manualTestOutput.txt", StoreStatus.SUCCESS);
     } catch (Exception e) {
       return new StorageResponse(null, StoreStatus.FAILURE_WRITE_ERROR);
