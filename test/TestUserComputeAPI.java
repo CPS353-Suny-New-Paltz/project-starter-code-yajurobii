@@ -1,5 +1,6 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -41,6 +42,7 @@ public class TestUserComputeAPI {
     // Store input 16.
     StorageResponse inputResp = dataStore.insertRequest(16);
     String inputId = inputResp.getId();
+    
 
     // Submitting the computation with coordination layer.
     UserSubmission sub = new UserSubmission(new InputSource("file", inputId), new OutputSource("stdout"),
