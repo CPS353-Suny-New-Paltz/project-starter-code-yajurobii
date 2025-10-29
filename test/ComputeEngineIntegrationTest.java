@@ -24,17 +24,21 @@ public class ComputeEngineIntegrationTest {
 
     // Act as if user entered "16"
     StorageResponse inResp = store.insertRequest(16);
+    assertNotNull(inResp, "insertRequest returned null response");
+    assertNotNull(inResp.getId(), "insertRequest returned null id");
     String inputId = inResp.getId();
 
     UserSubmission submission = new UserSubmission(new InputSource("memory", inputId), new OutputSource("stdout"),
         new Delimiter(",", ":"));
 
     UserSubResponse response = userApi.submit(submission);
+    System.out.println("DEBUG → IntegrationTest: subId = " + response.getSubId());
 
-    assertEquals(SubmissionStatus.SUCCESS, response.getStatus());
-    assertNotNull(response.getSubId());
+    assertEquals(SubmissionStatus.SUCCESS, response.getStatus(), "submit did not return SUCCESS");
+    assertNotNull(response.getSubId(), "submit returned null subId");
 
     String storedResult = store.loadResult(response.getSubId());
+    System.out.println("DEBUG → IntegrationTest: loaded result = " + storedResult);
     assertEquals("2,3,5,7,11,13", storedResult);
 
   }

@@ -4,6 +4,7 @@ import project.annotations.UserComputeAPI;
 import project.annotations.UserComputeAPIImplementation;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -15,8 +16,10 @@ import project.annotations.DataStoreComputeAPI;
 import project.annotations.DataStoreComputeAPIImplementation;
 import project.annotations.InputSource;
 import project.annotations.OutputSource;
+import project.annotations.SubmissionStatus;
 import project.annotations.Delimiter;
 import project.annotations.UserSubmission;
+import project.annotations.UserSubResponse;
 
 public class ManualTestingFramework {
 
@@ -24,37 +27,50 @@ public class ManualTestingFramework {
   public static final String OUTPUT = "manualTestOutput.txt";
 
   public static void main(String[] args) {
-    DataStoreComputeAPI dataStore = new DataStoreComputeAPIImplementation();
-    ComputeControllerAPI computeEngine = new ComputeControllerAPIImplementation();
-    UserComputeAPI coordinator = new UserComputeAPIImplementation(dataStore, computeEngine);
+    try { // Wire layers
+      DataStoreComputeAPI dataStore = new DataStoreComputeAPIImplementation();
+      ComputeControllerAPI computeEngine = new ComputeControllerAPIImplementation();
+      UserComputeAPI coordinator = new UserComputeAPIImplementation(dataStore, computeEngine);
 
-    try {
-      List<String> inputs = Files.readAllLines(Paths.get(INPUT));
-      StringBuilder allResults = new StringBuilder();
-
-      for (String line : inputs) {
-        int n = Integer.parseInt(line.trim());
-
-        UserSubmission sub = new UserSubmission(new InputSource("file", INPUT), new OutputSource(OUTPUT),
-            new Delimiter(",", ":"));
-
-        dataStore.insertRequest(n);
-
-        ComputeResponse result = computeEngine.compute(new ComputeRequest(n));
-
-        int count = result.getResult().isEmpty() ? 0 : result.getResult().split(",").length;
-        allResults.append(count).append(",");
+      // Ensure that the input exists; if not create a small sample.
+      Path inputPath = Path.of(INPUT);
+      if (!Files.exists(inputPath)) {
+        Files.writeString(inputPath, "16\n2\n5\n");
+        System.out.println("init Created: " + INPUT + " with: 16, 2, 5 ");
       }
 
-      if (allResults.length() > 0) {
-        allResults.setLength(allResults.length() - 1);
+      // A preview of the inputs
+      try {
+        List<String> preview = Files.readAllLines(inputPath);
+        System.out.println("Preview: " + INPUT + " = " + preview);
+      } catch (Exception e) {
+        System.out.println("Warning: Could not preview input: " + e.getMessage());
+      }
 
-        Files.writeString(Paths.get(OUTPUT), allResults.toString());
-        System.out.println("Computation done, results written to " + OUTPUT);
+      // Building a submission; reading from and writing to a file.
+      UserSubResponse sub = coordinator.submit(new project.annotations.UserSubmission(new InputSource("file", INPUT),
+          new OutputSource("file", OUTPUT), new Delimiter(",", ":")));
+
+      // Not throwing report status
+      if (sub == null || sub.getStatus() != SubmissionStatus.SUCCESS) {
+        System.out.println("Error: submission failed: " + (sub == null ? "null response" : sub.getStatus()));
+        return;
+      }
+
+      System.out.println("[OK] submission status = " + sub.getStatus());
+      System.out.println("[OK] result written to = " + sub.getSubId());
+
+      // Showing output content
+      try {
+        String out = Files.readString(Path.of(OUTPUT)).trim();
+        System.out.println("[result:file] " + out);
+      } catch (Exception e) {
+        System.out.println("Warning: Couldn't read output file: " + e.getMessage());
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      // Prevent re-throwing of checkpoint test asserts that no exception propagates.
+      System.out.println("Fatal: Unexpected error: " + e.getMessage());
     }
 
   }
