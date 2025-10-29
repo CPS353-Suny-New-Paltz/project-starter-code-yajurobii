@@ -72,7 +72,7 @@ public class DataStoreInMemory implements DataStoreComputeAPI {
           try {
             list.add(Integer.parseInt(token));
           } catch (NumberFormatException ignore) {
-
+            System.out.println("Warning: skipped malformed input token.");
           }
         }
       }
