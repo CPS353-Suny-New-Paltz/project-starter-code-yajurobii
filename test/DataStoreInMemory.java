@@ -51,4 +51,51 @@ public class DataStoreInMemory implements DataStoreComputeAPI {
     }
   }
 
+  @Override
+  public List<Integer> loadInputs(String inputPath) {
+    List<Integer> list = new ArrayList<>();
+    if (inputPath == null || inputPath.isBlank()) {
+      return list;
+    }
+    if (inputPath.startsWith("input-")) {
+      int value = loadData(inputPath);
+      if (value != 0) {
+        list.add(value);
+      }
+      return list;
+    }
+    if (inputPath.startsWith("mem:")) {
+      String raw = inputPath.substring("mem:".length()).trim();
+      if (!raw.isEmpty()) {
+        raw = raw.replace(",", " ");
+        for (String token : raw.split("\\s+")) {
+          try {
+            list.add(Integer.parseInt(token));
+          } catch (NumberFormatException ignore) {
+
+          }
+        }
+      }
+      return list;
+    }
+    return list;
+
+  }
+
+  @Override
+  public StoreStatus writeResult(String outputPath, String content) {
+    if (outputPath == null || outputPath.isBlank()) {
+      return StoreStatus.FAILURE_WRITE_ERROR;
+    }
+    if (content == null) {
+      content = "";
+    }
+
+    try {
+      results.add(content);
+      return StoreStatus.SUCCESS;
+    } catch (Exception e) {
+      return StoreStatus.FAILURE_WRITE_ERROR;
+    }
+  }
 }
