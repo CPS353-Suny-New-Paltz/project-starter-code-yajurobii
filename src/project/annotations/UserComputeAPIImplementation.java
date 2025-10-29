@@ -1,5 +1,9 @@
 package project.annotations;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+
 public class UserComputeAPIImplementation implements UserComputeAPI {
 
   private final DataStoreComputeAPI dataStore;
@@ -12,17 +16,54 @@ public class UserComputeAPIImplementation implements UserComputeAPI {
   }
 
   @Override
-  public UserSubResponse submit(UserSubmission submission) {
-    try {
-      int n = dataStore.loadData(submission.getInput().getLocation());
-      if (n <= 0) {
+  public UserSubResponse submit(UserSubmission submission) { // validation
+    if (submission == null || submission.getInput() == null || submission.getInput().getLocation() == null
+        || submission.getInput().getLocation().isBlank() || submission.getOutput() == null
+        || submission.getOutput().getLocation() == null || submission.getOutput().getLocation().isBlank()) {
+
+      return new UserSubResponse(null, SubmissionStatus.FAILURE_SYSTEM_ERROR); // Shows invalid parameters as error
+                                                                               // result
+    }
+
+    try { // load input from location.
+      List<Integer> inputs = dataStore.loadInputs(submission.getInput().getLocation());
+      if (inputs.isEmpty()) {
         return new UserSubResponse(null, SubmissionStatus.FAILURE_SYSTEM_ERROR);
       }
-      ComputeResponse result = computeEngine.compute(new ComputeRequest(n));
-      StorageResponse resResp = dataStore.insertResult(result.getResult());
-      return new UserSubResponse(resResp.getId(), SubmissionStatus.SUCCESS);
+
+      StringBuilder results = new StringBuilder(); // Compute each and build combined line.
+      for (Integer n : inputs) {
+        if (n == null || n <= 0) {
+          continue; // ignoring negatives
+        }
+        ComputeResponse result = computeEngine.compute(new ComputeRequest(n));
+        if (results.length() > 0) {
+          results.append(",");
+        }
+        results.append(result.getResult());
+      }
+      if (results.length() == 0) {
+        return new UserSubResponse(null, SubmissionStatus.FAILURE_SYSTEM_ERROR);
+      }
+
+      StoreStatus status = dataStore.writeResult(submission.getOutput().getLocation(), results.toString()); // store
+                                                                                                            // result
+                                                                                                            // string to
+                                                                                                            // user
+                                                                                                            // specified
+                                                                                                            // path.
+      if (status != StoreStatus.SUCCESS) {
+        return new UserSubResponse(null, SubmissionStatus.FAILURE_SYSTEM_ERROR);
+      }
+      return new UserSubResponse(submission.getOutput().getLocation(), SubmissionStatus.SUCCESS); // return id as output
+                                                                                                  // file path so tests
+                                                                                                  // can load if
+                                                                                                  // necessary.
+
     } catch (Exception e) {
-      return new UserSubResponse(null, SubmissionStatus.FAILURE_SYSTEM_ERROR);
+      return new UserSubResponse(null, SubmissionStatus.FAILURE_SYSTEM_ERROR); // prevent exception from boundary
+                                                                               // crossing.
     }
   }
-}
+} // Delimiter isn't validated because the engine does not rely on a specific
+  // delimiter format.

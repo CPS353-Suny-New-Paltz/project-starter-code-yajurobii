@@ -3,21 +3,31 @@ package project.annotations;
 public class ComputeControllerAPIImplementation implements ComputeControllerAPI {
   @Override
   public ComputeResponse compute(ComputeRequest request) {
+    if (request == null) {
+      return new ComputeResponse("");
+    }
     int n = request.getInput(); // getting upper bound(input number e.g. 16)
-    StringBuilder result = new StringBuilder(); // building output string/result
+    if (n < 2) {
+      return new ComputeResponse("");
+    }
 
     // looping from 2 up to n because 2 is first prime.
-    for (int i = 2; i <= n; i++) {
-      if (isPrime(i)) { // checking if i is prime.
-        if (result.length() > 0) { // if its not he first prime a comma is added.
-          result.append(",");
+    try {
+      StringBuilder result = new StringBuilder();
+      for (int i = 2; i <= n; i++) {
+        if (isPrime(i)) { // checking if i is prime.
+          if (result.length() > 0) { // if its not he first prime a comma is added.
+            result.append(",");
+          }
+          result.append(i); // add the prime number to the string.
         }
-        result.append(i); // add the prime number to the string.
+
       }
+      return new ComputeResponse(result.toString()); // returns all primes as CSV.
 
+    } catch (RuntimeException ex) {
+      return new ComputeResponse("");
     }
-    return new ComputeResponse(result.toString()); // returns all primes as CSV.
-
   }
 
   private boolean isPrime(int num) {
