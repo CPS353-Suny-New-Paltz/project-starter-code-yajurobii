@@ -63,8 +63,9 @@ public class UserComputeAPIImplementation implements UserComputeAPI {
         }
         ComputeResponse r = computeEngine.compute(new ComputeRequest(n));
         String s = (r == null || r.getResult() == null) ? "" : r.getResult();
-        if (results.length() > 0)
+        if (results.length() > 0) {
           results.append(combo);
+        }
         results.append(s);
       }
 
