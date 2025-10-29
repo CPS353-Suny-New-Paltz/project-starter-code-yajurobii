@@ -3,18 +3,16 @@ package project.annotations;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
-  // Two files where data is stored and received.
-  private static final String INPUT_FILE = "manualTestInput";
-  private static final String RESULT_FILE = "manualTestOutput.txt";
 
   @Override
   public StorageResponse insertRequest(int input) {// Converts integer to string then writes string to file imput.txt
     try {
-      Files.writeString(Paths.get(INPUT_FILE), String.valueOf(input));
-      return new StorageResponse(INPUT_FILE, StoreStatus.SUCCESS);
+      Files.writeString(Paths.get("manualTestInput.txt"), String.valueOf(input));
+      return new StorageResponse("manualTestInput.txt", StoreStatus.SUCCESS);
     } catch (Exception e) {
       return new StorageResponse(null, StoreStatus.FAILURE_WRITE_ERROR);
     }
@@ -43,8 +41,8 @@ public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
       result = "";
     }
     try {
-      Files.writeString(Paths.get(RESULT_FILE), result);
-      return new StorageResponse(RESULT_FILE, StoreStatus.SUCCESS);
+      Files.writeString(Paths.get("manualTestOutput.txt"), result);
+      return new StorageResponse("manualTestOutput.txt", StoreStatus.SUCCESS);
     } catch (Exception e) {
       return new StorageResponse(null, StoreStatus.FAILURE_WRITE_ERROR);
     }
@@ -64,13 +62,39 @@ public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
 
   @Override
   public List<Integer> loadInputs(String inputPath) {
-    // TODO Auto-generated method stub
-    return null;
+    List<Integer> nums = new ArrayList<>();
+    if (inputPath == null || inputPath.isBlank()) {
+      return nums;
+    }
+    try {
+      String raw = Files.readString(Paths.get(inputPath)).trim();
+      if (raw.isEmpty()) {
+        return nums;
+      }
+      for (String token : raw.split("\\s+")) {
+        try {
+          nums.add(Integer.parseInt(token));
+        } catch (NumberFormatException ignore) {
+          System.out.print("Warning: malformed token.");
+        }
+      }
+      return nums;
+    } catch (Exception e) {
+      return nums;
+    }
   }
 
   @Override
   public StoreStatus writeResult(String outputPath, String content) {
-    // TODO Auto-generated method stub
-    return null;
+    if (outputPath == null || outputPath.isBlank()) {
+      return StoreStatus.FAILURE_WRITE_ERROR;
+    }
+    try {
+      Files.writeString(Paths.get(outputPath), content == null ? "" : content);
+      return StoreStatus.SUCCESS;
+    } catch (Exception e) {
+      return StoreStatus.FAILURE_WRITE_ERROR;
+    }
   }
-}
+} // no validation on int range for insert request because all ints are ,
+  // coordinator decides what's accepted.
