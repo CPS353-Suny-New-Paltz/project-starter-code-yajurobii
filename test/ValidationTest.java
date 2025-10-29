@@ -16,7 +16,7 @@ import project.annotations.UserSubmission;
 public class ValidationTest {
 
   @Test
-  public void RejectBlankInput() {
+  public void rejectBlankInput() {
     UserComputeAPI user = new UserComputeAPIImplementation(new DataStoreInMemory(),
         new ComputeControllerAPIImplementation());
     // invalid InputSouce
