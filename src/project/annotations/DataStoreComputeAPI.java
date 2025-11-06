@@ -4,6 +4,10 @@ import java.util.List;
 
 @ProcessAPI
 public interface DataStoreComputeAPI {
+
+  // Unified read.
+  List<Integer> read(InputSource src);
+
   // Stores data(positive integer(s)) as bytes, then returns them as a response
   // with an ID.
   StorageResponse insertRequest(int input);

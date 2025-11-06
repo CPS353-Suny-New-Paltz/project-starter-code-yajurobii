@@ -1,13 +1,50 @@
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import project.annotations.DataStoreComputeAPI;
+import project.annotations.InputSource;
 import project.annotations.StorageResponse;
 import project.annotations.StoreStatus;
 
 public class DataStoreInMemory implements DataStoreComputeAPI {
   private List<Integer> inputs = new ArrayList<>(); // Stores raw input data in memory.
   private List<String> results = new ArrayList<>(); // Stores computed results in memory.
+
+  @Override
+  public List<Integer> read(InputSource src) {
+    List<Integer> list = new ArrayList<>();
+    if (src == null) {
+      return list;
+    }
+
+    String type = src.getInputType() == null ? "" : src.getInputType();
+    String loc = src.getLocation() == null ? "" : src.getLocation();
+    if (loc.isEmpty()) {
+      return list;
+    }
+
+    if ("memory".equalsIgnoreCase(type) || loc.startsWith("input-")) {
+      int value = loadData(loc);
+      if (value > 0) {
+        list.add(value);
+      }
+      return list;
+    }
+    if (loc.startsWith("mem:")) {
+      String raw = loc.substring("mem:".length()).trim().replace(",", " ");
+      for (String token : raw.split("\\s+")) {
+        try {
+          list.add(Integer.parseInt(token));
+        } catch (NumberFormatException ignore) {
+          System.out.print("Warning!");
+        }
+      }
+      return list;
+    }
+    return list;
+  }
 
   // If request is null failure response returned, otherwise .size() gives index
   // where item will go, data added to list, id created e.g. "input-0",
@@ -53,32 +90,8 @@ public class DataStoreInMemory implements DataStoreComputeAPI {
 
   @Override
   public List<Integer> loadInputs(String inputPath) {
-    List<Integer> list = new ArrayList<>();
-    if (inputPath == null || inputPath.isBlank()) {
-      return list;
-    }
-    if (inputPath.startsWith("input-")) {
-      int value = loadData(inputPath);
-      if (value != 0) {
-        list.add(value);
-      }
-      return list;
-    }
-    if (inputPath.startsWith("mem:")) {
-      String raw = inputPath.substring("mem:".length()).trim();
-      if (!raw.isEmpty()) {
-        raw = raw.replace(",", " ");
-        for (String token : raw.split("\\s+")) {
-          try {
-            list.add(Integer.parseInt(token));
-          } catch (NumberFormatException ignore) {
-            System.out.println("Warning: skipped malformed input token.");
-          }
-        }
-      }
-      return list;
-    }
-    return list;
+    // Move to unified read.
+    return read(new InputSource("memory", inputPath));
 
   }
 
