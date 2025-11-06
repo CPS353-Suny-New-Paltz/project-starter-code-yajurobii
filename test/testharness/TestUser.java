@@ -1,4 +1,4 @@
-package testHarness;
+package testharness;
 
 import java.io.File;
 import java.nio.file.Files;
