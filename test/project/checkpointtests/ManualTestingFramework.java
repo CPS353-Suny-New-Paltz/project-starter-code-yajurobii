@@ -33,7 +33,7 @@ public class ManualTestingFramework {
     UserComputeAPI coordinator = new UserComputeAPIImplementation(dataStore, computeEngine);
 
     UserSubmission sub = new UserSubmission(new InputSource("file", INPUT), new OutputSource("file", OUTPUT),
-        new Delimiter(";", ":"));
+        new Delimiter(",", ":"));
 
     UserSubResponse resp = coordinator.submit(sub);
     System.out.println("Status: " + (resp == null ? "null" : resp.getStatus()));
