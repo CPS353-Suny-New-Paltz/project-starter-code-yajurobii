@@ -9,6 +9,54 @@ import java.util.List;
 public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
 
   @Override
+  public List<Integer> read(InputSource src) {
+    List<Integer> nums = new ArrayList<>();
+    if (src == null) {
+      return nums;
+    }
+
+    String type = safe(src.getInputType());
+    String loc = safe(src.getLocation());
+    if (loc.isEmpty()) {
+      return nums;
+    }
+
+    try {
+      if ("memory".equalsIgnoreCase(type) || loc.startsWith("input-")) {
+        int n = loadData(loc);
+        if (n > 0) {
+          nums.add(n);
+        }
+        return nums;
+      }
+
+      if (!Files.exists(Paths.get(loc))) {
+        return nums;
+      }
+
+      String raw = Files.readString(Paths.get(loc)).trim();
+      if (raw.isEmpty()) {
+        return nums;
+      }
+
+      for (String token : raw.split("[\\s,]+")) {
+        try {
+          nums.add(Integer.parseInt(token));
+        } catch (NumberFormatException ignore) {
+          System.out.println("[warn] Skipped malformed token: " + token);
+        }
+      }
+      return nums;
+    } catch (Exception e) {
+      return nums;
+    }
+  }
+
+  private static String safe(String s) {
+    return s == null ? "" : s;
+  }
+
+  @Override
   public StorageResponse insertRequest(int input) {// Converts integer to string then writes string to file imput.txt
     try {
       Files.writeString(Paths.get("manualTestInput.txt"), String.valueOf(input));
