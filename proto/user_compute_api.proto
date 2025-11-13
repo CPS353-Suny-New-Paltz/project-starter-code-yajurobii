@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package usercompute;
+
+option java_multiple_files = true;
+option java_package = "project.rpc.usercompute";
+option java_outer_classname = "UserComputeApiProto";
+
+enum SubmissionStatus {
+  SUB_STATUS_UNSPECIFIED    = 0;
+  SUB_STATUS_SUCCESS        = 1;
+  SUB_STATUS_INVALID_INPUT  = 2;
+  SUB_STATUS_SYSTEM_ERROR   = 3;
+}
+
+message InputSource {
+  string input_type = 1;
+  string location   = 2;
+}
+
+message OutputSource {
+  string output_type = 1;
+  string location    = 2;
+}
+
+message Delimiter {
+  string combo_delimiter  = 1;
+  string result_delimiter = 2;
+}
+
+message UserSubmission {
+  InputSource input   = 1;
+  OutputSource output = 2;
+  Delimiter delimiters = 3;
+}
+
+message UserSubResponse {
+  string sub_id          = 1;
+  SubmissionStatus status = 2;
+}
+
+service UserComputeAPI {
+  rpc Submit(UserSubmission) returns (UserSubResponse);
+}

@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package datastore;
+
+option java_multiple_files = true;
+option java_package = "project.rpc.datastore";
+option java_outer_classname = "DataStoreApiProto";
+
+message InputSource {
+  string input_type = 1;
+  string location   = 2;
+}
+
+message ReadRequest {
+  InputSource src = 1;
+}
+
+message ReadResponse {
+  repeated int32 nums = 1;
+}
+
+message InsertRequest {
+  int32 input = 1;
+}
+
+message InsertResponse {
+  string id = 1;
+  bool ok   = 2;
+}
+
+message LoadDataRequest {
+  string id = 1;
+}
+
+message LoadDataResponse {
+  int32 value = 1;
+}
+
+message InsertResultRequest {
+  string result = 1;
+}
+
+message InsertResultResponse {
+  string id = 1;
+  bool ok   = 2;
+}
+
+message LoadResultRequest {
+  string id = 1;
+}
+
+message LoadResultResponse {
+  string result = 1;
+}
+
+message LoadInputsRequest {
+  string path = 1;
+}
+
+message LoadInputsResponse {
+  repeated int32 nums = 1;
+}
+
+message WriteResultRequest {
+  string path    = 1;
+  string content = 2;
+}
+
+message WriteResultResponse {
+  bool ok = 1;
+}
+
+service DataStoreAPI {
+  rpc Read       (ReadRequest)        returns (ReadResponse);
+  rpc Insert     (InsertRequest)      returns (InsertResponse);
+  rpc LoadData   (LoadDataRequest)    returns (LoadDataResponse);
+
+  rpc InsertResult (InsertResultRequest) returns (InsertResultResponse);
+  rpc LoadResult   (LoadResultRequest)   returns (LoadResultResponse);
+
+  rpc LoadInputs   (LoadInputsRequest)   returns (LoadInputsResponse);
+  rpc WriteResult  (WriteResultRequest)  returns (WriteResultResponse);
+}
