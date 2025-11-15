@@ -22,13 +22,13 @@ public class UserComputeGrpcService extends UserComputeAPIGrpc.UserComputeAPIImp
   // Map actual enums to proto enums.
   private static project.rpc.usercompute.SubmissionStatus toProto(SubmissionStatus s) {
     switch (s) {
-    case SUCCESS:
-      return project.rpc.usercompute.SubmissionStatus.SUB_STATUS_SUCCESS;
-    case FAILURE_INVALID_INPUT:
-      return project.rpc.usercompute.SubmissionStatus.SUB_STATUS_INVALID_INPUT;
-    case FAILURE_SYSTEM_ERROR:
-    default:
-      return project.rpc.usercompute.SubmissionStatus.SUB_STATUS_SYSTEM_ERROR;
+      case SUCCESS:
+        return project.rpc.usercompute.SubmissionStatus.SUB_STATUS_SUCCESS;
+      case FAILURE_INVALID_INPUT:
+        return project.rpc.usercompute.SubmissionStatus.SUB_STATUS_INVALID_INPUT;
+      case FAILURE_SYSTEM_ERROR:
+      default:
+        return project.rpc.usercompute.SubmissionStatus.SUB_STATUS_SYSTEM_ERROR;
     }
   }
 
