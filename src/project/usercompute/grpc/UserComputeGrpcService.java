@@ -31,6 +31,7 @@ public class UserComputeGrpcService extends UserComputeAPIGrpc.UserComputeAPIImp
       return project.rpc.usercompute.SubmissionStatus.SUB_STATUS_SYSTEM_ERROR;
     }
   }
+
   // Handles submit RPC, convert protobuf submission to acttual submission,
   // delagate to actual submit, convert actual subresponse to protobuf
   // subresponse.
