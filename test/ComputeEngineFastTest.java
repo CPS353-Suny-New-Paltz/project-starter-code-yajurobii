@@ -7,7 +7,7 @@ import project.annotations.ComputeControllerAPIImplementation;
 import project.annotations.ComputeControllerAPIFast;
 import project.annotations.ComputeRequest;
 
-public class ComputeFastTest {
+public class ComputeEngineFastTest {
 
   @Test
   public void isFastFaster() {
