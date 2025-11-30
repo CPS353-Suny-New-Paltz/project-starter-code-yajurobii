@@ -18,7 +18,6 @@ import java.util.Map;
    This may not be practical though as it needs input to be cached(repeated) for a significant speed up to occur.
  */
 
-@ConceptualAPI
 public class ComputeControllerAPIFast implements ComputeControllerAPI {
 
   private final ComputeControllerAPI original = new ComputeControllerAPIImplementation();
