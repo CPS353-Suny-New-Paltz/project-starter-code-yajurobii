@@ -25,6 +25,8 @@ There's a multi-thread implementation of the Network API with the upper bound of
 | ComputeControllerAPI (slow)       | 1.781541  |
 | ComputeControllerAPIFast (fast)   | 0.006917  |
 
+Hardware: m2 macbook air
+
 Performance Improvement: 99.6% reduction in compute time.
 
 Performance Test [test/ComputeEngineFastTest.java](test/ComputeEngineFastTest.java) to test for results.
