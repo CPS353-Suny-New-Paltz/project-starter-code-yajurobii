@@ -18,14 +18,13 @@ import java.util.Map;
    This may not be practical though as it needs input to be cached(repeated) for a significant speed up to occur.
  */
 
-public class ComputeControllerAPIFast implements ComputeControllerAPI {
+public class ComputeControllerAPIFast {
 
   private final ComputeControllerAPI original = new ComputeControllerAPIImplementation();
 
   // Map from input n -> "2,3,5,7,..."
   private final Map<Integer, String> cache = new HashMap<>();
 
-  @Override
   public ComputeResponse compute(ComputeRequest request) {
     if (request == null) {
       return new ComputeResponse("");

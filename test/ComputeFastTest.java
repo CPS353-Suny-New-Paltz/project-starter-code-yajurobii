@@ -12,7 +12,7 @@ public class ComputeFastTest {
   @Test
   public void isFastFaster() {
     ComputeControllerAPI slow = new ComputeControllerAPIImplementation();
-    ComputeControllerAPI fast = new ComputeControllerAPIFast();
+    ComputeControllerAPIFast fast = new ComputeControllerAPIFast();
 
     int input = 50000;
 
