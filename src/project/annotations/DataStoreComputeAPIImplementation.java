@@ -59,20 +59,11 @@ public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
     return s == null ? "" : s;
   }
 
-  private static final String INPUT_DIR = "inputs";
-  private static int inputCounter = 0;
-
   @Override
   public StorageResponse insertRequest(int input) {// Converts integer to string then writes string to file imput.txt
     try {
-      Files.createDirectories(Paths.get(INPUT_DIR));
-
-      String id = "input-" + (inputCounter++);
-      String filePath = INPUT_DIR + "/" + id + ".txt";
-
-      Files.writeString(Paths.get(filePath), String.valueOf(input));
-
-      return new StorageResponse(id, StoreStatus.SUCCESS);
+      Files.writeString(Paths.get("manualTestInput.txt"), String.valueOf(input));
+      return new StorageResponse("manualTestInput.txt", StoreStatus.SUCCESS);
     } catch (Exception e) {
       return new StorageResponse(null, StoreStatus.FAILURE_WRITE_ERROR);
     }
@@ -85,8 +76,7 @@ public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
       return 0;
     }
     try {
-      String filePath = INPUT_DIR + "/" + id + ".txt";
-      if (!Files.exists(Paths.get(filePath))) {
+      if (!Files.exists(Paths.get(id))) {
         return 0;
       }
       String content = Files.readString(Paths.get(id)).trim();
