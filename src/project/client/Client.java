@@ -16,14 +16,15 @@ public class Client {
 
     System.out.println(" USER CLIENT ");
     System.out.print("Enter input type (file/memory): ");
-    String inputType = sc.nextLine();
+    String inputType = sc.nextLine().trim();
 
     // When input type is memory client asks how many integers wanted.
     String inputLoc;
     if ("memory".equalsIgnoreCase(inputType)) {
       System.out.print("Enter in-memory integers (space or comma separated): ");
-      String nums = sc.nextLine().trim();
-      inputLoc = "mem:" + nums;
+      String raw = sc.nextLine().trim();
+      inputLoc = raw;
+      
     } else { // When input type is something like file it acts like it did previously.
       System.out.print("Enter input location (e.g., input.txt or input-0): ");
       inputLoc = sc.nextLine().trim();
