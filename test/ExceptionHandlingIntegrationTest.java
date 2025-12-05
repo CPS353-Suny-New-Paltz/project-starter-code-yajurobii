@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import project.annotations.ComputeControllerAPI;
 import project.annotations.ComputeRequest;
 import project.annotations.ComputeResponse;
+import project.annotations.DataStoreInMemory;
 import project.annotations.Delimiter;
 import project.annotations.InputSource;
 import project.annotations.OutputSource;

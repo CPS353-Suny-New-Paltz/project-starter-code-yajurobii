@@ -1,6 +1,5 @@
 package project.annotations;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -22,10 +21,14 @@ public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
     }
 
     try {
-      if ("memory".equalsIgnoreCase(type) || loc.startsWith("input-")) {
-        int n = loadData(loc);
-        if (n > 0) {
-          nums.add(n);
+      if ("memory".equalsIgnoreCase(type)) {
+        String raw = loc.trim().replace(",", " ");
+        for (String token : raw.split("\\s+")) {
+          try {
+            nums.add(Integer.parseInt(token));
+          } catch (NumberFormatException ignore) {
+            System.out.println("[warn] Skipped malformed token: " + token);
+          }
         }
         return nums;
       }
@@ -56,11 +59,20 @@ public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
     return s == null ? "" : s;
   }
 
+  private static final String INPUT_DIR = "inputs";
+  private static int inputCounter = 0;
+
   @Override
   public StorageResponse insertRequest(int input) {// Converts integer to string then writes string to file imput.txt
     try {
-      Files.writeString(Paths.get("manualTestInput.txt"), String.valueOf(input));
-      return new StorageResponse("manualTestInput.txt", StoreStatus.SUCCESS);
+      Files.createDirectories(Paths.get(INPUT_DIR));
+
+      String id = "input-" + (inputCounter++);
+      String filePath = INPUT_DIR + "/" + id + ".txt";
+
+      Files.writeString(Paths.get(filePath), String.valueOf(input));
+
+      return new StorageResponse(id, StoreStatus.SUCCESS);
     } catch (Exception e) {
       return new StorageResponse(null, StoreStatus.FAILURE_WRITE_ERROR);
     }
@@ -73,7 +85,8 @@ public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
       return 0;
     }
     try {
-      if (!Files.exists(Paths.get(id))) {
+      String filePath = INPUT_DIR + "/" + id + ".txt";
+      if (!Files.exists(Paths.get(filePath))) {
         return 0;
       }
       String content = Files.readString(Paths.get(id)).trim();
@@ -83,14 +96,25 @@ public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
     }
   }
 
+  private static final String RESULT_DIR = "results";
+  private static int resultCounter = 0;
+
   @Override
   public StorageResponse insertResult(String result) {// Computed result string written to result.txt.
     if (result == null) {
       result = "";
     }
+
     try {
-      Files.writeString(Paths.get("manualTestOutput.txt"), result == null ? "" : result);
-      return new StorageResponse("manualTestOutput.txt", StoreStatus.SUCCESS);
+      Files.createDirectories(Paths.get(RESULT_DIR));
+
+      String id = "result-" + (resultCounter++);
+      String filePath = RESULT_DIR + "/" + id + ".txt";
+
+      Files.writeString(Paths.get(filePath), result);
+
+      return new StorageResponse(id, StoreStatus.SUCCESS);
+
     } catch (Exception e) {
       return new StorageResponse(null, StoreStatus.FAILURE_WRITE_ERROR);
     }
@@ -102,7 +126,11 @@ public class DataStoreComputeAPIImplementation implements DataStoreComputeAPI {
       return null;
     }
     try {
-      return Files.readString(Paths.get(id)).trim();
+      String filePath = RESULT_DIR + "/" + id + ".txt";
+      if (!Files.exists(Paths.get(filePath))) {
+        return null;
+      }
+      return Files.readString(Paths.get(filePath)).trim();
     } catch (Exception e) {
       return null;
     }

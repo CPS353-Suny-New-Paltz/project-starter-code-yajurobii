@@ -1,12 +1,6 @@
-import java.nio.file.Files;
-import java.nio.file.Paths;
+package project.annotations;
 import java.util.ArrayList;
 import java.util.List;
-
-import project.annotations.DataStoreComputeAPI;
-import project.annotations.InputSource;
-import project.annotations.StorageResponse;
-import project.annotations.StoreStatus;
 
 public class DataStoreInMemory implements DataStoreComputeAPI {
   private List<Integer> inputs = new ArrayList<>(); // Stores raw input data in memory.
