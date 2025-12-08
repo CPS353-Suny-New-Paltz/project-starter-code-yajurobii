@@ -35,6 +35,7 @@ public class ComputeEngineFastTest {
     System.out.println("Cached time   (ms): " + (fastTime / 1_000_000.0));
 
     // Assertion to confirm that fast is at least 10% faster.
-    assertTrue(fastTime * 11 < slowTime * 10, "Fast version must be at least 10% faster than slow version");
+    assertTrue(fastTime * 11 < slowTime * 10,
+        "Fast version must be at least 10% faster than slow version");
   }
 }
