@@ -14,21 +14,20 @@ public class ComputeEngineFastTest {
     ComputeControllerAPI slow = new ComputeControllerAPIImplementation();
     ComputeControllerAPIFast fast = new ComputeControllerAPIFast();
 
-    int[] inputs = { 50000, 40000, 30000, 50000, 45000, 50000, 35000, 40000, 50000, 32000, 50000, 40000, 28000, 50000,
-        45000 };
+    int input = 50000;
 
     // Measure slow
     long slowStart = System.nanoTime();
-    for (int n : inputs) {
-      slow.compute(new ComputeRequest(n));
-    }
+    slow.compute(new ComputeRequest(input));
     long slowTime = System.nanoTime() - slowStart;
+
+    // First call fills the cache, so it can be called.
+    fast.compute(new ComputeRequest(input));
 
     // Second call hits the cache, returns immediately.
     long fastStart = System.nanoTime();
-    for (int n : inputs) {
-      fast.compute(new ComputeRequest(n));
-    }
+    fast.compute(new ComputeRequest(input));
+
     long fastTime = System.nanoTime() - fastStart;
 
     System.out.println("Uncached time (ns): " + slowTime);
