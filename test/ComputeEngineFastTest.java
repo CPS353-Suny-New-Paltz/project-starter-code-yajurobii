@@ -27,7 +27,6 @@ public class ComputeEngineFastTest {
     // Second call hits the cache, returns immediately.
     long fastStart = System.nanoTime();
     fast.compute(new ComputeRequest(input));
-
     long fastTime = System.nanoTime() - fastStart;
 
     System.out.println("Uncached time (ns): " + slowTime);
