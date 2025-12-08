@@ -1,6 +1,6 @@
 package project.annotations;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /*
@@ -20,10 +20,19 @@ import java.util.Map;
 
 public class ComputeControllerAPIFast {
 
+  // number of distinct n values that can be stored at once.
+  private static final int MAX_CACHE_ENTRIES = 100;
+
   private final ComputeControllerAPI original = new ComputeControllerAPIImplementation();
 
   // Map from input n -> "2,3,5,7,..."
-  private final Map<Integer, String> cache = new HashMap<>();
+  private final Map<Integer, String> cache = new LinkedHashMap<Integer, String>(16, 0.75f, true) {
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<Integer, String> oldest) {
+      // Evict oldest when the max size is exceeded.
+      return size() > MAX_CACHE_ENTRIES;
+    }
+  };
 
   public ComputeResponse compute(ComputeRequest request) {
     if (request == null) {
